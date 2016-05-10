@@ -55,6 +55,10 @@ String command = "";
 String _buffer = "";
 bool start_reading = false;
 
+/********************************************
+ Read a command from the BlueTooth module
+ *******************************************/
+
 void read_command()
 {
   _buffer = "YNNN*NNYNNNNNNN*";
@@ -79,6 +83,10 @@ void read_command()
   _buffer = "";
   start_reading = false;
 }
+
+/****************************************
+ Use the command to actuate the request
+ ***************************************/
 
 void auto_control(String command)
 {
@@ -139,6 +147,10 @@ void auto_control(String command)
     power();
   }
 }
+
+/**************************************************************************************************
+ * All the the functions below correspond to different actions performed by the flight controller *
+ * ***********************************************************************************************/
 
 void power()
 {
