@@ -13,9 +13,9 @@ void readSerial_RX(void);
   void spekBind(void);
 #endif
 
-void auto_control();
-void power_on();
-void power_off();
+void read_command();
+void auto_control(String command);
+void power();
 void inc_throttle();
 void dec_throttle();
 void mid_throttle();

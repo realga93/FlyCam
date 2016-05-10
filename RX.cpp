@@ -50,22 +50,108 @@ bool front = false;
 bool left = false;
 bool right = false;
 bool back = false;
+bool power_on = false;
+String command = "";
+String _buffer = "";
+bool start_reading = false;
 
-void auto_control()
+void read_command()
 {
+  _buffer = "YNNN*NNYNNNNNNN*";
   
+  for(int i = 0; i < _buffer.length(); ++i)
+  {
+    if(start_reading && _buffer[i] != '*')
+    {
+      command += _buffer[i];
+    }
+    else if(start_reading && _buffer[i] == '*')
+    {
+      break;
+    }
+    if(_buffer[i] == '*')
+    {
+      start_reading = true;
+    }
+  }
+  auto_control(command);
+  command = "";
+  _buffer = "";
+  start_reading = false;
 }
 
-void power_on()
+void auto_control(String command)
 {
-  rcValue[0] = THROTTLE_MIN;
-  rcValue[3] = YAW_MAX;
+  if(command[0] == 'Y' && command[2] == 'N')
+  {
+    forward();
+  }
+  else if(command[0] == 'N' && command[2] == 'Y')
+  {
+    backward();
+  }
+  else
+  {
+    no_pitch();
+  }
+
+  if(command[1] == 'Y' && command[3] == 'N')
+  {
+    turn_left();
+  }
+  else if(command[1] == 'N' && command[3] == 'Y')
+  {
+    turn_right();
+  }
+  else
+  {
+    no_roll();
+  }
+
+  if(command[4] == 'Y' && command[6] == 'N')
+  {
+    inc_throttle();
+  }
+  else if(command[4] == 'N' && command[6] == 'Y')
+  {
+    dec_throttle();
+  }
+  else
+  {
+    mid_throttle();
+  }
+
+  if(command[5] == 'Y' && command[7] == 'N')
+  {
+    rotate_right();
+  }
+  else if(command[5] == 'N' && command[7] == 'Y')
+  {
+    rotate_left();
+  }
+  else
+  {
+    no_yaw();
+  }
+
+  if(command[9] == 'Y')
+  {
+    power();
+  }
 }
 
-void power_off()
+void power()
 {
-  rcValue[0] = THROTTLE_MIN;
-  rcValue[3] = YAW_MIN;
+  if(!power_on)
+  {
+    rcValue[0] = THROTTLE_MIN;
+    rcValue[3] = YAW_MAX;
+  }
+  else if(power_on)
+  {
+    rcValue[0] = THROTTLE_MIN;
+    rcValue[3] = YAW_MIN;
+  }
 }
 
 void inc_throttle()
